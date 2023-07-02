@@ -19,8 +19,8 @@
  *    'Tue, 26 Jan 2016 13:48:02 GMT' => Date()
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
-function parseDataFromRfc2822(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromRfc2822(value) {
+  return new Date(value);
 }
 
 /**
@@ -34,8 +34,8 @@ function parseDataFromRfc2822(/* value */) {
  *    '2016-01-19T16:07:37+00:00'    => Date()
  *    '2016-01-19T08:07:37Z' => Date()
  */
-function parseDataFromIso8601(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromIso8601(value) {
+  return new Date(value);
 }
 
 
@@ -53,8 +53,8 @@ function parseDataFromIso8601(/* value */) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(ate) {
+  return (new Date(ate.getFullYear(), 2, 0)).getDate() === 29;
 }
 
 
@@ -73,8 +73,15 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const toStrLen = (t) => (t < 10 ? `0${t}` : `${t}`);
+
+  const time = endDate.getTime() - startDate.getTime();
+  const hours = Math.floor(time / (1000 * 60 * 60));
+  const minutes = Math.floor((time - hours * (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = ((time - hours * (1000 * 60 * 60) - minutes * (1000 * 60)) / 1000).toFixed(3);
+
+  return `${toStrLen(hours)}:${toStrLen(minutes)}:${toStrLen(seconds)}`;
 }
 
 
@@ -94,8 +101,20 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  const h = date.getUTCHours();
+  const m = date.getUTCMinutes();
+  // console.debug('date: ', date);
+  // console.debug('hours: ', h);
+  // console.debug('minutes: ', m);
+  const res = (Math.abs(0.5 * (60 * h - 11 * m)));
+  // console.debug('res: ', res);
+  const res1 = res % 360;
+  // console.debug('res1: ', res1);
+  const res2 = res1 < 180 ? res1 : 360 - res1;
+  // console.debug('res2: ', res2);
+  const resRad = (res2 / 180) * Math.PI;
+  return resRad;
 }
 
 
