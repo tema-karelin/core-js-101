@@ -345,8 +345,23 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const bracketsConfig = [['[', ']'], ['(', ')'], ['{', '}'], ['<', '>']];
+  const bracket = [];
+  for (let i = 0; i < str.length; i += 1) {
+    for (let n = 0; n < bracketsConfig.length; n += 1) {
+      if ((str[i] === bracketsConfig[n][0] && str[i] !== bracket[bracket.length - 1])
+          || (str[i] === bracketsConfig[n][0] && bracketsConfig[n][0] !== bracketsConfig[n][1])) {
+        bracket.push(str.charAt(i));
+      } else {
+        if (bracket.length === 0 && str[i] === bracketsConfig[n][1]) return false;
+        if ((str[i] === bracketsConfig[n][1])
+            && (bracket[bracket.length - 1] === bracketsConfig[n][0])) bracket.pop();
+      }
+    }
+  }
+  if (bracket.length === 0) return true;
+  return false;
 }
 
 
@@ -421,8 +436,24 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const rows1 = m1.length;
+  const cols1 = m1[0].length;
+  const rows2 = m2.length;
+  const cols2 = m2[0].length;
+  const C = [];
+  if (cols1 !== rows2) return false;
+
+  for (let i = 0; i < rows1; i += 1) C[i] = [];
+
+  for (let k = 0; k < cols2; k += 1) {
+    for (let i = 0; i < rows1; i += 1) {
+      let t = 0;
+      for (let j = 0; j < rows2; j += 1) t += m1[i][j] * m2[j][k];
+      C[i][k] = t;
+    }
+  }
+  return C;
 }
 
 
@@ -456,8 +487,24 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  if (position.length < 3) position.push([]);
+  for (let i = 0; i < position.length; i += 1) {
+    if (position[i].length < 3) position[i].push(undefined);
+  }
+  const arr = position.flat();
+  function compare(a, b, c) {
+    if (arr[a] === arr[b] && arr[a] === arr[c] && arr[c] === arr[b] && (arr[a] === '0' || arr[a] === 'X')) return arr[a];
+    return undefined;
+  }
+  return compare(0, 1, 2) // row 1
+      || compare(3, 4, 5) // row 2
+      || compare(6, 7, 8) // row 3
+      || compare(0, 3, 6) // col 1
+      || compare(1, 4, 7) // col 2
+      || compare(2, 5, 8) // col 3
+      || compare(2, 4, 6) // d 1
+      || compare(0, 4, 8); // d 2
 }
 
 
