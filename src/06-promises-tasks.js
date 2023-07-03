@@ -52,8 +52,8 @@ function willYouMarryMe(isPositiveAnswer) {
  *    })
  *
  */
-function processAllPromises(/* array */) {
-  throw new Error('Not implemented');
+function processAllPromises(array) {
+  return Promise.all(array);
 }
 
 /**
@@ -75,8 +75,8 @@ function processAllPromises(/* array */) {
  *    })
  *
  */
-function getFastestPromise(/* array */) {
-  throw new Error('Not implemented');
+function getFastestPromise(array) {
+  return Promise.race(array);
 }
 
 /**
@@ -96,8 +96,26 @@ function getFastestPromise(/* array */) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
+function chainPromises(array, action) {
+  const p = new Promise((resolve, reject) => {
+    let counter = 0;
+    const results = [];
+    for (let i = 0; i < array.length; i += 1) {
+      Promise.resolve(array[i])
+      // eslint-disable-next-line no-loop-func
+        .then((value) => {
+          counter += 1;
+          results[i] = value;
+          if (counter === array.length) {
+            resolve(results);
+          }
+        })
+        .catch((err) => reject(err));
+    }
+  })
+    .then((results) => results.reduce(action))
+    .catch((err) => new Error(err));
+  return p;
 }
 
 module.exports = {
